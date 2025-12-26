@@ -1,0 +1,750 @@
+%% LyX 2.4.1 created this file.  For more info, see https://www.lyx.org/.
+%% Do not edit unless you really know what you are doing.
+\documentclass[english]{article}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}  
+\usepackage{fontspec}
+\usepackage{geometry}
+\geometry{verbose}
+\author{李居奇 125034910326}
+\setcounter{tocdepth}{2}
+\usepackage{color}
+\usepackage{cprotect}
+\usepackage{calc}
+\usepackage{enotez}
+\usepackage{graphicx}
+\usepackage[colorlinks=true, linkcolor=black, urlcolor=magenta, citecolor=green, pdfusetitle,
+ bookmarks=true,bookmarksnumbered=false,bookmarksopen=false,
+ breaklinks=false,pdfborder={0 0 0},pdfborderstyle={},backref=false]
+ {hyperref}
+
+\graphicspath{{./assets/}}
+
+\makeatletter
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% LyX specific LaTeX commands.
+\providecommand\textquotedblplain{%
+  \bgroup\addfontfeatures{Mapping=}\char34\egroup}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Textclass specific LaTeX commands.
+\numberwithin{equation}{section}
+\usepackage{paralist}
+\numberwithin{figure}{section}
+\newcommand{\lyxaddress}[1]{
+	\par {\raggedright #1
+	\vspace{1.4em}
+	\noindent\par}
+}
+\theoremstyle{definition}
+\newtheorem{defn}{\protect\definitionname}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
+\usepackage[scheme=plain]{ctex}
+\usepackage{amsthm}
+\usepackage{xcolor}
+% \usepackage[colorlinks=true, linkcolor=blue, urlcolor=magenta, citecolor=green]{hyperref}
+\usepackage{listings}
+
+\makeatother
+
+\usepackage{listings}
+\lstset{numbers=left,
+framexleftmargin=10mm,
+frame=none,
+backgroundcolor={\color[RGB]{245,245,244}},
+keywordstyle={\bf\color{blue}},
+identifierstyle={\bf},
+numberstyle={\color[RGB]{0,192,192}},
+commentstyle={\it\color[RGB]{0,96,96}},
+stringstyle={\rmfamily\slshape\color[RGB]{128,0,0}},
+showstringspaces=false}
+\usepackage{polyglossia}
+\setdefaultlanguage[variant=american]{english}
+\providecommand{\definitionname}{Definition}
+\renewcommand{\lstlistingname}{Listing}
+\renewcommand{\lstlistlistingname}{Listings}
+
+\begin{document}
+
+
+\pagenumbering{gobble} % 关闭页码
+
+\title{几何布朗运动与自融资策略的研究}
+
+\maketitle
+
+\lyxaddress{\begin{center}
+上海交通大学 \quad 集成电路学院
+\par
+\end{center}}
+
+
+\begin{abstract}
+
+布朗运动作为一种典型的连续时间随机过程，
+是现代随机过程理论和金融数学建模的基础。
+几何布朗运动模型由于能够同时刻画资产价格的波动性与长期增长趋势，
+被广泛应用于股票价格演化和金融市场分析。
+基于几何布朗运动的连续时间金融市场模型，
+为投资组合选择、交易策略设计及风险管理提供了严谨的数学工具。
+
+本文首先回顾了布朗运动的基本定义与主要性质，
+并通过计算机模拟展示了不同参数下布朗运动的首达时间分布及其变差特征。
+随后，系统介绍了几何布朗运动模型的数学结构，
+利用伊藤（Itô）公式推导其解析解，
+并通过数值实验验证了伊藤修正项在随机微分方程求解中的重要性。
+最后，结合自融资策略模型，
+分析了固定持仓与动态最优持仓两类投资策略下的财富过程演化，
+并通过大量仿真对比了不同策略实现目标财富的效率和风险特征。
+
+本研究通过理论推导与数值模拟相结合，
+深入揭示了随机过程在金融投资中的应用价值，
+为理解和优化实际投资策略提供了有益参考。
+
+
+\textbf{关键词：} 布朗运动，随机微分方程，伊藤公式，几何布朗运动，自融资策略
+
+\end{abstract}
+
+\newpage
+
+\tableofcontents{}
+
+\pagebreak{}
+
+
+\pagenumbering{arabic} % 恢复页码，从1开始
+\setcounter{page}{1}
+
+\section{基本布朗运动}
+
+\subsection{基础概念}
+
+布朗运动（Brownian Motion），又称为维纳过程（Wiener Process），
+首先由英国生物学家布朗于 1827 年根据观察花粉微粒在液面上作“无规则运
+动”的物理现象而提出。爱因斯坦于1905年首次对这一现象的物理规律给出了一种数学描述。
+1918 年，维纳对这一现象在理论上给出了精确的数学描述，并进一步研究了布朗运动轨道的
+性质，提出了在布朗运动空间上定义测度和积分。
+
+布朗运动$W(t),t\in[0,T]$是一个连续随机过程，下面先给出几个布朗运动的数学性质：
+
+\begin{itemize}
+    \item 布朗运动满足初值为零：$B(0) = 0$。
+    \item 与泊松过程类似，布朗运动是独立增量过程，具有马尔科夫性：对于任意 $0 \leq t_1 < t_2 < \cdots < t_n$，增量 $B(t_{i+1}) - B(t_i)$ 彼此独立。
+    \item 布朗运动的增量服从正态分布：$B(t+s) - B(s) \sim N(0, t\sigma^2)$，即均值为0，方差为$t\sigma^2$的正态分布。
+    \item 布朗运动的路径连续但几乎处处不可微。
+\end{itemize}
+
+
+使用计算机模拟生成的多条布朗运动轨道如下图\ref{布朗运动轨道}所示，
+对于每一条路径，总共切分为 1000 个时间步，在每个时间步
+使用正态分布随机数生成每个时间步的增量。
+通过累加这些增量，得到布朗运动的轨迹。
+可以看到布朗运动轨道具有连续
+但波动剧烈（不可微）的特点，且 $\sigma$ 参数越大，
+在相同时间内，轨道波动越剧烈：
+
+\begin{figure}[htbp]
+\centering
+\caption{布朗运动轨道}\label{布朗运动轨道}
+\centering{}\includegraphics[width=0.8\textwidth,totalheight=0.4\textheight]{brown_track}
+\end{figure}
+
+
+
+\subsection{首达时间}
+
+由于本文是对关注对金融投资策略的选取，我们接下来讨论首达时间，
+对于随机过程 $\{X_t\}_{t \geq 0}$，
+首达时间 $T_a$ 定义为过程首次到达某一水平 $a$ 的时间，我们可以理解为股票价值首次
+达到某一高价值水平的时间：
+
+$$
+T_a = \inf\{ t > 0 : X_t = a \}
+$$
+
+根据布朗运动的反射定理，设 $B_t$ 为标准布朗运动，$a > 0$，则对于任意 $t > 0$，
+
+$$
+P\left( \max_{0 \leq s \leq t} B_s \geq a \right) = 2P(B_t \geq a)
+$$
+
+该定理说明，布朗运动在 $[0, t]$ 内达到 $a$ 的概率是 $B_t$ 在 $t$ 
+时刻超过 $a$ 的概率的两倍。
+
+设 $T_a$ 为布朗运动首次达到 $a$ 的时间。我们关心 $P(T_a \leq t)$，
+即在时间 $t$ 内首次达到 $a$ 的概率。
+
+由反射定理可得：
+$$
+P(T_a \leq t) = P\left( \max_{0 \leq s \leq t} B_s \geq a \right) = 2P(B_t \geq a)
+$$
+
+由于 $B_t \sim N(0, t)$，有
+
+$$
+P(B_t \geq a) = \int_{a}^{\infty} \frac{1}{\sqrt{2\pi t}} \exp\left( -\frac{x^2}{2t} \right) dx
+$$
+
+因此，
+
+$$
+P(T_a \leq t) = 2 \int_{a}^{\infty} \frac{1}{\sqrt{2\pi t}} \exp\left( -\frac{x^2}{2t} \right) dx
+$$
+
+进一步，首达时间的概率密度函数为:
+
+$$
+f_{T_a}(t) = \frac{|a|}{\sqrt{2\pi t^3}} \exp\left( -\frac{a^2}{2t} \right), \quad t > 0
+$$
+
+这表明布朗运动首达某一水平的时间服从反正态分布
+（Inverse Gaussian Distribution），
+通过计算机模拟不同 $a$ 值下的布朗运动首达时间如图\ref{布朗运动首达时间}
+的分布函数所示，每次实验统计了 5000 条布朗运动的轨道，
+每条轨道模拟了 30 s 的运动过程：
+
+\begin{figure}[htbp]
+\centering
+\caption{布朗运动的首达时间分布}\label{布朗运动首达时间}
+\centering{}\includegraphics[width=\textwidth,totalheight=0.2\textheight]{brown_first}
+\end{figure}
+
+
+可以看到，随着 $a$ 增大，首达时间的分布更趋向于延长，期望与
+方差也随之增大，也就是潜在的不稳定性累积量增大，所以投资者需要
+在预期的首达时间上做出取舍。
+
+更进一步，我们可以带入另一个实际的金融场景，当股票的价值达到 $a$ 时，
+需要探究之后股票价值首次达到$a+b$的时间间隔分布情况。
+设 $T_a^{(1)}$ 为当前时间，
+$T_a^{(2)}$ 为之后股票价值首次达到$a+b$的时间，
+则两次到达之间的时间间隔为 $\Delta T = T_a^{(2)} - T_a^{(1)}$。
+对于布朗运动，由于布朗运动的马尔可夫性质，
+该间隔的分布与可以直接套用首达时间分布的公式。
+投资者可以设定一个止盈或止损水平 $a+b$，
+当股票价格首次达到该水平时进行售出。
+此时，时间 $T_a^{(2)}$ 就是股票被售出的时刻。
+通过分析首达时间的分布，可以评估达到目标价格的概率和预期等待时间，
+从而优化买卖策略。
+
+
+
+\subsection{一阶变差与二阶变差}
+
+
+在金融市场中，变差是衡量随机过程的重要工具，
+二阶变差可以用来衡量资产价格波动的累积效应，
+对于随机过程 $A_T = \{A_t; t \geq 0\}$，
+其 $p$ 阶变差（$p \geq 1$）定义如下，
+设 $\Delta_n$ 表示 $[0, t]$ 的一个划分：
+$$
+0 = t_0 < t_1 < t_2 < \ldots < t_n = t,
+$$
+记 $|\Delta_n| = \sup |t_{i+1} - t_i|$ 为划分的模。定义
+$$
+S_t^{A, n}(\Delta_n) = \sum_{i=1}^n |A_{t_{i+1}} - A_{t_i}|^p
+$$
+若极限
+$$
+S_t^A = \lim_{|\Delta_n| \to 0} S_t^{A, n}(\Delta_n)
+$$
+存在，则称 $S_t^A$ 为 $A_T$ 在 $[0, t]$ 上的 $p$ 阶变差。
+其中，\textbf{一阶变差}（$p=1$）反映了过程在区间 $[0, t]$ 内的总变化量，
+衡量了路径的“粗糙度”或“总波动”。\textbf{二阶变差}（$p=2$）则度量了过程在区间 $[0, t]$ 内波动的累积效应，
+尤其在分析布朗运动等不规则过程时非常重要。
+
+\begin{figure}[htbp]
+\centering
+\caption{一阶变差}
+\label{一阶变差}
+\centering{}
+\includegraphics[width=0.4\paperwidth,totalheight=0.23\paperheight]{brown_vd.png}
+\end{figure}
+
+\newpage
+
+\begin{figure}[htbp]
+\centering
+\caption{二阶变差}
+\label{二阶变差}
+\centering{}
+\includegraphics[width=0.4\paperwidth,totalheight=0.23\paperheight]{brown_vd2.png}
+\end{figure}
+
+下面我们考察布朗运动的变差情况，
+利用计算机软件模拟我们得到标准布朗运动的一阶变差图像\ref{一阶变差}
+和二阶变差图像\ref{二阶变差}，首先注意到一阶变差的值会随着 $dt$ 的减小而增大，
+这是因为一阶变差定义为：
+$$
+S_t^{(1), n} = \sum_{i=0}^{n-1} |W_{t_{i+1}} - W_{t_i}|
+$$
+由于 $W_{t_{i+1}} - W_{t_i} \sim N(0, t_{i+1} - t_i)$，
+每个增量的绝对值的期望为：
+$$
+\mathbb{E}|W_{t_{i+1}} - W_{t_i}| = \sqrt{\frac{2}{\pi}} \sqrt{t_{i+1} - t_i}
+$$
+因此，
+$$
+\mathbb{E} S_t^{(1), n} = \sqrt{\frac{2}{\pi}} \sum_{i=0}^{n-1} \sqrt{t_{i+1} - t_i}
+$$
+当划分足够细时，$\sum_{i=0}^{n-1} \sqrt{t_{i+1} - t_i} \to \infty$，
+最终，标准布朗运动的路径在 $[0, t]$ 上的一阶变差会趋于无穷大：
+
+$$
+S_t^{(1)} = \lim_{|\Delta_n| \to 0} S_t^{(1), n} = +\infty
+$$
+
+
+然后注意到二阶变差的值会随着 $dt$ 的减小而趋近于直线 $t$，这是因为
+二阶变差定义为：
+$$
+S_t^{(2), n} = \sum_{i=0}^{n-1} (W_{t_{i+1}} - W_{t_i})^2
+$$
+由于 $W_{t_{i+1}} - W_{t_i} \sim N(0, t_{i+1} - t_i)$，有
+$$
+\mathbb{E}[(W_{t_{i+1}} - W_{t_i})^2] = t_{i+1} - t_i
+$$
+因此，
+$$
+\mathbb{E} S_t^{(2), n} = \sum_{i=0}^{n-1} (t_{i+1} - t_i) = t
+$$
+事实上，可以证明随着划分加细，$S_t^{(2), n}$ 依概率收敛于 $t$，即
+$$
+S_t^{(2)} = \lim_{|\Delta_n| \to 0} S_t^{(2), n} = t
+$$
+这说明标准布朗运动在 $[0, t]$ 上的二阶变差等于区间长度 $t$。
+
+
+
+
+
+
+\section{几何布朗运动和伊藤公式}
+
+
+\subsection{几何布朗运动}
+
+
+几何布朗运动（Geometric Brownian Motion, GBM）
+是金融数学中常用来描述股票等资产价格演化的随机过程\cite{AppliedStochasticProcess}。其定义如下：
+
+设 $S_t$ 表示股票在时刻 $t$ 的价格，则 $S_t$ 满足如下随机微分方程（SDE）：
+$$
+dS_t = \mu S_t\,dt + \sigma S_t\,dB_t
+$$
+其中：
+\begin{itemize}
+    \item $\mu$ 为漂移率（drift rate），表示股票的平均收益率；
+    \item $\sigma$ 为波动率（volatility），表示股票价格的波动强度；
+    \item $B_t$ 为标准布朗运动。
+\end{itemize}
+
+几何布朗运动广泛应用于 Black-Scholes 期权定价模型等金融工程领域，
+是建模股票等金融资产价格动态的经典模型。
+
+
+\subsection{伊藤公式}
+
+伊藤公式（Itô's formula）是随机微积分中的核心定理，类似于常微分中的链式法则。设 $X_t$ 是如下的一维伊藤过程：
+\[
+dX_t = \mu(t, X_t)\,dt + \sigma(t, X_t)\,dB_t,
+\]
+其中 $B_t$ 为标准布朗运动，$\mu$ 和 $\sigma$ 是适当的函数。
+
+若 $f(t, x)$ 关于 $t$ 一次可微、关于 $x$ 二次可微，则 $Y_t = f(t, X_t)$ 也是一个伊藤过程，其微分满足：
+\[
+df(t, X_t) = \frac{\partial f}{\partial t}(t, X_t)\,dt
++ \frac{\partial f}{\partial x}(t, X_t)\,dX_t
++ \frac{1}{2}\frac{\partial^2 f}{\partial x^2}(t, X_t)\,\sigma^2(t, X_t)\,dt
+\]
+将 $dX_t$ 代入，得
+\[
+df(t, X_t) = \left(
+\frac{\partial f}{\partial t}
++ \mu\,\frac{\partial f}{\partial x}
++ \frac{1}{2}\sigma^2\,\frac{\partial^2 f}{\partial x^2}
+\right)dt
++ \sigma\,\frac{\partial f}{\partial x}\,dB_t
+\]
+
+注意到伊藤公式在 $dt$ 的一阶无穷小下，除了常规的链式法则项，
+还多了一个 $\frac{1}{2}\sigma^2 \frac{\partial^2 f}{\partial x^2} dt$ 
+的“伊藤修正项”。
+该修正项反映了布朗运动路径的不可微性，
+是随机分析与常规微积分的本质区别。为了从数值模拟层面说明这个修正项的重要性，
+考虑标准布朗运动 $B_t$，根据普通微积分（黎曼积分）的链式法则，
+函数 $f(x) = x^2$ 的导数为 $f'(x) = 2x$，
+因此 $\int_0^T 2B_t dB_t$ 应当等于 $B_T^2$。
+
+然而，前文提到布朗运动具有非零二阶变差，即 $(dB_t)^2 = dt$。根据伊藤公式，
+对于随机过程 $B_t^2$，其微分形式为：
+$$
+    d(B_t^2) = 2B_t dB_t + (dB_t)^2 = 2B_t dB_t + dt
+$$
+对应的积分形式为：
+$$
+    B_T^2 = 2\int_0^T B_t dB_t + T
+$$
+其中 $T$ 称为伊藤修正项。下面通过计算机程序模拟进行验证，
+笔者将时间区间 $[0, T]$ 划分为 $N$ 个等分点，步长 $\Delta t = T/N$。
+定义 $t_i = i\Delta t$。使用 Euler 离散化近似随机积分：
+$$
+    I_{stochastic} \approx 2 \sum_{i=1}^{N} B_{t_{i-1}}(B_{t_i} - B_{t_{i-1}})
+$$
+同时，计算路径终点的平方 $B_T^2$，
+比较 $B_T^2$ 与 $I_{stochastic}$ 的差值，结果如下图\ref{伊藤修正项验证}所示，
+其中可以明显看到线性的伊藤修正项 $T$ 的存在：
+
+\begin{figure}[htbp]
+\centering
+\caption{伊藤修正项验证}
+\label{伊藤修正项验证}
+\centering{}
+\includegraphics[width=0.6\paperwidth,totalheight=0.3\paperheight]{ito.png}
+\end{figure}
+
+
+\subsection{几何布朗运动的数值模拟}
+
+验证了随机微分性质的特殊性，下面
+先利用伊藤公式对几何布朗运动的随机微分方程求显示解：
+
+我们对 $S_t$ 取对数，令 $f(S_t) = \ln S_t$，利用伊藤公式，有：
+\[
+df(S_t) = \frac{1}{S_t} dS_t - \frac{1}{2} \frac{1}{S_t^2} (dS_t)^2
+\]
+代入 $dS_t$ 并注意 $(dB_t)^2 = dt$，得到：
+\[
+df(S_t) = \frac{1}{S_t} (\mu S_t dt + \sigma S_t dB_t) - \frac{1}{2} \frac{1}{S_t^2} (\sigma^2 S_t^2 dt)
+= \mu dt + \sigma dB_t - \frac{1}{2} \sigma^2 dt
+\]
+因此，
+\[
+d(\ln S_t) = \left(\mu - \frac{1}{2}\sigma^2\right)dt + \sigma dB_t
+\]
+
+对两边从 $0$ 到 $t$ 积分，得到：
+\[
+\ln S_t - \ln S_0 = \left(\mu - \frac{1}{2}\sigma^2\right)t + \sigma B_t
+\]
+即显示解为：
+\[
+S_t = S_0 \exp\left[\left(\mu - \frac{1}{2}\sigma^2\right)t + \sigma B_t\right]
+\]
+
+改变 $\sigma$ 和  $\mu$ 的取值，使用显示解的结果
+对该过程进行计算机数值模拟，
+得到的多组结果如图\ref{几何布朗运动的数值模拟}下所示:
+
+
+\begin{figure}[htbp]
+\centering
+\caption{几何布朗运动的数值模拟}
+\label{几何布朗运动的数值模拟}
+\includegraphics[width=0.7\paperwidth,totalheight=0.3\paperheight]{gbm1.png}
+\end{figure}
+
+
+观察数值模拟的结果，可知在几何布朗运动模型中，参数 $\mu$（漂移率）
+和 $\sigma$（波动率）对轨道的影响主要体现在以下几个方面：
+
+\begin{itemize}
+    \item 漂移率 $\mu$ 的影响： 增大 $\mu$ 会提升轨道的整体上升趋势，使得资产价格在长期内呈现更快的指数增长。
+    \item 波动率 $\sigma$ 的影响： 增大 $\sigma$ 会显著增强轨道的波动性，使得资产价格的随机波动幅度变大。
+    \item 初始值 $S_0$ 的影响： $S_0$ 决定了所有轨道的起点，$S_0$ 越大，整体价格水平越高，但不影响轨道的相对变化趋势和波动性。
+\end{itemize}
+
+对该过程的期望和方差进行推导验证如下：
+
+\begin{align*}
+E[S_t] &= E\left[ S_0 \exp\left( \left(\mu - \frac{1}{2}\sigma^2\right)t + \sigma B_t \right) \right] \\
+&= S_0 \exp\left( \left(\mu - \frac{1}{2}\sigma^2\right)t \right) \cdot E[e^{\sigma B_t}] \\
+&= S_0 \exp\left( \left(\mu - \frac{1}{2}\sigma^2\right)t \right) \cdot \exp\left( \frac{1}{2}\sigma^2 t \right) \\
+&= S_0 e^{\mu t}
+\end{align*}
+
+
+\begin{align*}
+E[S_t^2] &= E\left[ S_0^2 \exp\left( (2\mu - \sigma^2)t + 2\sigma B_t \right) \right] \\
+&= S_0^2 \exp\left( (2\mu - \sigma^2)t \right) \cdot E[e^{2\sigma B_t}] \\
+&= S_0^2 \exp\left( (2\mu - \sigma^2)t \right) \cdot \exp\left( \frac{1}{2}(2\sigma)^2 t \right) \\
+&= S_0^2 \exp\left( (2\mu - \sigma^2)t + 2\sigma^2 t \right) \\
+&= S_0^2 e^{(2\mu + \sigma^2)t}
+\end{align*}
+
+
+\begin{align*}
+Var(S_t) &= S_0^2 e^{(2\mu + \sigma^2)t} - (S_0 e^{\mu t})^2 \\
+&= S_0^2 e^{2\mu t} (e^{\sigma^2 t} - 1)
+\end{align*}
+
+
+综合来看，$\mu$ 决定了股票价值的平均增长速度，
+$\sigma$ 决定了价格的风险和不确定性，
+两者共同决定了资产价格的长期分布和短期波动特征。
+在实际金融建模中，合理选择和估计这两个参数对于风险管理和投资决策具有重要意义。
+
+
+
+
+
+\section{股票投资策略与自融资策略分析}
+
+
+\subsection{数学建模}
+
+在金融市场中，投资者通常通过买卖股票来实现财富的增长，同时，为了抵抗
+金融市场波动的风险，投资者可能会将部分资金存入无风险资产（如银行存款或国债）。
+为了描述这种投资行为，我们引入以下数学模型：
+
+设 $S_t$ 为每支股票单价的价格过程，表示股票在时刻 $t$ 的价格，
+其满足我们之前讨论的几何布朗运动模型：
+$$dS_t = \mu S_t dt + \sigma S_t dB_t$$
+其中，$\mu$ 为股票的预期收益率，$\sigma$ 为股票的波动率，$B_t$ 为标准布朗运动。
+
+设 $r$ 为银行的无风险利率，表示存入银行的资金在单位时间内的增长率，设 $t$ 时刻
+手头持有的股票数量为随机过程 $\Delta_t$，投资持有的总财富为 $X_t$，
+则总财富的变化可以表示为：
+$$dX_t = \Delta_t dS_t + r(X_t - \Delta_t S_t) dt$$
+其中，$\Delta_t dS_t$ 表示股票投资带来的收益，
+$r(X_t - \Delta_t S_t) dt$ 表示存入银行的资金所获得的利息\cite{AppliedStochasticProcess}。
+
+
+\subsection{固定持仓策略下的财富过程模拟}
+
+
+我们先讨论在固定持有股票数量 $\Delta_t = \Delta$ 的假设下，
+财富过程 $X_t$ 的性质。
+将几何布朗运动 $dS_t = \mu S_t dt + \sigma S_t dB(t)$ 代入财富过程：
+\begin{align*}
+    dX_t &= \Delta_t \left( \mu S_t dt + \sigma S_t dB(t) \right) + r(X_t - \Delta_t S_t) dt \\
+    &= \Delta_t \mu S_t dt + \Delta_t \sigma S_t dB(t) + r X_t dt - r \Delta_t S_t dt \\
+    &= r X_t dt + \Delta_t (\mu - r) S_t dt + \Delta_t \sigma S_t dB(t)
+\end{align*}
+
+
+为了消除方程 中的 $r X_t dt$ 项，引入因子 $e^{-rt}$。
+定义辅助随机过程 $Y_t$ 为：
+$$
+    Y_t = f(t, X_t) = X_t e^{-rt}
+$$
+
+对 $Y_t$ 应用伊藤公式，计算其随机微分 $d(X_t e^{-rt})$：
+\begin{align}
+    d(X_t e^{-rt}) &= \frac{\partial f}{\partial t} dt + \frac{\partial f}{\partial X} dX_t + \frac{1}{2} \frac{\partial^2 f}{\partial X^2} (dX_t)^2 \notag \\
+    &= -r X_t e^{-rt} dt + e^{-rt} dX_t \notag \\
+    &= -r X_t e^{-rt} dt + e^{-rt} \left[ r X_t dt + \Delta (\mu - r) S_t dt + \Delta \sigma S_t dB_t \right] \notag \\
+    &= \Delta (\mu - r) S_t e^{-rt} dt + \Delta \sigma S_t e^{-rt} dB_t \label{eq:d_wealth_discounted}
+\end{align}
+
+同样地，对贴现股价过程 $S_t e^{-rt}$ 应用伊藤公式：
+\begin{align}
+    d(S_t e^{-rt}) &= -r S_t e^{-rt} dt + e^{-rt} dS_t \notag \\
+    &= -r S_t e^{-rt} dt + e^{-rt} \left[ \mu S_t dt + \sigma S_t dB_t \right] \notag \\
+    &= (\mu - r) S_t e^{-rt} dt + \sigma S_t e^{-rt} dB_t \label{eq:d_stock_discounted}
+\end{align}
+
+比较式两可以得对应关系：
+$$
+    d(X_t e^{-rt}) = \Delta \cdot d(S_t e^{-rt})
+$$
+对等式两边在区间 $[0, t]$ 上进行积分：
+$$
+    X_t e^{-rt} - X_0 = \Delta (S_t e^{-rt} - S_0)
+$$
+
+
+将上式两边同乘以 $e^{rt}$，整理可得财富过程 $X_t$ 的最终解析表达式：
+$$
+    X_t = X_0 e^{rt} + \Delta (S_t - S_0 e^{rt})
+$$
+
+该解析解表明，在固定持仓策略下，投资者的财富由两部分组成：
+\begin{itemize}
+    \item {无风险收益项} $X_0 e^{rt}$：初始财富以无风险利率增长；
+    \item {风险收益项} $\Delta (S_t - S_0 e^{rt})$：股票价格带来的风险收益
+\end{itemize}
+
+通过 Euler 计算机模拟财富过程 $X_t$ 的轨道，我们可以观察到在不同参数条件下，
+财富过程的演化特征。以如下的参数设置为例，笔者生成了 10 条财富过程轨道，
+总共时间为 30 ，如图\ref{财富过程的数值模拟}所示：
+
+\begin{itemize}
+    \item $X_0 = 1000$：投资者初始总财富；
+    \item $S_0 = 50$：股票初始价格；$\Delta = 10$：恒定持有的股票数量；
+    \item $\mu = 0.08$：股票的预期收益率；$\sigma = 0.25$：股票价格的波动率；
+    \item $r = 0.03$：无风险利率；
+\end{itemize}
+
+
+\begin{figure}[htbp]
+\centering
+\caption{财富过程的数值模拟}
+\label{财富过程的数值模拟}
+\includegraphics[width=0.7\paperwidth,totalheight=0.2\paperheight]{wealth1.png}
+\end{figure}
+
+和基本布朗类似，随着时间的推移，财富过程 $X_t$ 的波动性逐渐增大，
+这主要是由于股票价格 $S_t$ 的波动性传导到财富过程中所致。
+不同的是，由于无风险利率 $r$ 和股票的预期收益率 $\mu$ 的存在，使得总财富
+在长期内呈现出一定的增长趋势。
+
+
+对于投资者而言，通常会设置一个目标财富水平 $X_{target}$，
+当财富过程首次达到该水平时，投资者可能会选择退出市场或调整投资策略。
+这里笔者也以首次达到目标财富水平 $X_{target}$ 的时间分布来量化投资策略的有效性。
+与之前布朗运动的首达时间类似，我们可以定义财富过程的首达时间 $T_{X_{target}}$ 为：
+$$T_{X_{target}} = \inf\{ t > 0 : X_t \geq X_{target} \}$$
+这个首达时间分布的计算比布朗运动复杂很多，
+不过我们可以通过计算机模拟多条财富过程轨道，统计首次达到目标财富水平的时间分布，
+选用的目标财富水平 $X_{target} = 2000$，
+模拟次数为 2000 次，
+其余随机过程的参数依然和之前实验一致，
+打印的结果如图\ref{财富过程的首达时间分布}所示；
+
+可以看到，这个分布与布朗运动的首达时间分布类似，
+随着时间的推移，达到目标财富水平的概率逐渐增大。但由于固定持仓策略的限制，股票价格
+的波动性会直接传导到财富过程上，这使得首达时间的分布的方差较大，并且
+在股票价格跌落时，财富过程的数值会同步出现较大幅度的下跌，
+这增加了投资者实现目标财富的时间。
+
+
+\begin{figure}[htbp]
+\centering
+\caption{财富过程的首达时间分布}
+\label{财富过程的首达时间分布}
+\includegraphics[width=0.65\paperwidth,totalheight=0.3\paperheight]{wealth2.png}
+\end{figure}
+
+
+
+\subsection{自融资策略下的投资策略选取}
+
+
+下面我们讨论当投资者允许动态调整持仓数量 $\Delta_t$ 时，
+金融投资策略选取，即自融资策略下的财富过程 $X_t$ 的最优化问题。
+根据参考文献\cite{Algorithmic}提供的理论基础，
+对于投资者而言，在最短的时间内达到预期的财富水平 $X_{target}$ 即最好的策略效果，
+这个问题可以转换为在一定时间范围 $[0, T]$ 内，
+最大化期望值 $E[X_T]$。定义最值函数为：
+$$
+    V(t, x) = \max_{\{\Delta_s\}_{s=t}^T} E[X_T | X_t = x]
+$$
+
+我们设股票投资的比例为：
+
+$$\pi_t = \frac{\Delta_t S_t}{X_t}$$，
+
+据伊藤引理和动态规划原理，
+最值函数 $V(t, x)$ 满足 Hamilton-Jacobi-Bellman 方程：
+$$
+    V_t + \max_{\pi} \left\{ x[r + \pi(\mu - r)] V_x + \frac{1}{2} \pi^2 x^2 \sigma^2 V_{xx} \right\} = 0
+$$
+投资者的效用函数为 $U(x)$，终端条件为 $V(T, x) = U(x)$。
+
+
+为了求得使大括号内函数最大的 $\pi$，对 $\pi$ 求偏导并令其为 0：
+$$
+    x(\mu - r) V_x + \pi x^2 \sigma^2 V_{xx} = 0
+$$
+解得最优投资比例的通用表达式：
+$$
+    \pi^* = - \frac{\mu - r}{\sigma^2} \frac{V_x}{x V_{xx}}
+$$
+
+若投资者具有对数效用 $U(x) = \ln x$，可猜测最值函数形式为 $V(t, x) = \ln x + f(t)$。
+计算其偏导数：$V_x = \frac{1}{x}$，$V_{xx} = -\frac{1}{x^2}$,
+代入上述通用表达式，可得股票占有比例的最优解：
+$$
+    \pi^* = \frac{\mu - r}{\sigma^2}
+$$
+由此，最佳的动态股票持仓数量的选取方案为：
+$$
+    \Delta_t^* = \frac{\pi^* X_t}{S_t} = \frac{\mu - r}{\sigma^2} \frac{X_t}{S_t}
+$$
+带入原本的财富过程方程，可得最优财富过程的随机微分方程：
+\begin{align*}
+    dX_t^* &= \Delta_t^* dS_t + r(X_t^* - \Delta_t^* S_t) dt \\
+    &= \frac{\mu - r}{\sigma^2} \frac{X_t^*}{S_t} (\mu S_t dt + \sigma S_t dB_t) + r\left(X_t^* - \frac{\mu - r}{\sigma^2} X_t^*\right) dt \\
+    &= X_t^* \left[ r + \frac{(\mu - r)^2}{\sigma^2} \right] dt + X_t^* \frac{\mu - r}{\sigma} dB_t \\
+\end{align*}
+
+对上述自融资策略下的最优财富过程随机微分方程进行数值模拟，
+选用的参数设置与之前固定持仓策略一致，
+分别得到 10 条动态持仓的最优财富过程轨道和 10 条
+固定持仓的财富过程轨道并计算其均值，如图\ref{自融资策略下的最优财富过程}所示：
+
+
+\begin{figure}[htbp]
+\centering
+\caption{自融资策略下的最优财富过程}
+\label{自融资策略下的最优财富过程}
+\includegraphics[width=0.65\paperwidth,totalheight=0.25\paperheight]{wealth3.png}
+\end{figure}
+
+
+可以看到，均值期望高于固定持仓策略。
+最后，笔者对自融资策略下的最优财富过程的首达时间分布进行了计算机模拟，
+选用的目标财富水平 $X_{target} = 2000$，其余参数与之前保持一致，
+模拟次数为 2000 次，打印的结果如图\ref{自融资策略下的最优财富过程的首达时间分布}所示；
+效果也明显优于固定持仓策略，首达时间的分布和期望更集中在较短的时间内，
+这表明通过参考文献所提供的动态调整股票持仓比例，投资者能够更有效地实现其财富增长目标，
+从而提升投资策略的整体表现。
+
+
+\begin{figure}[htbp]
+\centering
+\caption{自融资策略下的最优财富过程的首达时间分布}
+\label{自融资策略下的最优财富过程的首达时间分布}
+\includegraphics[width=0.65\paperwidth,totalheight=0.25\paperheight]{wealth4.png}
+\end{figure}
+
+
+
+\section{总结与感想}
+
+
+本文系统地梳理了布朗运动、几何布朗运动及其在金融投资策略中的应用。
+通过理论推导与数值模拟相结合，
+深入理解了布朗运动的基本性质、首达时间分布以及变差等核心概念，
+并利用伊藤公式揭示了随机微积分与经典微积分的本质区别。
+几何布朗运动作为金融市场中资产价格建模的基础，
+其解析解和参数影响通过仿真得到了直观展示。
+
+在投资策略部分，
+本文分别对固定持仓和自融资动态持仓两类策略下的财富过程进行了建模与对比。
+通过大量仿真轨道和首达时间分布的统计，发
+现动态最优持仓策略不仅能提升财富增长的期望，还能显著缩短实现目标财富的时间，
+提高了投资的效率。这一结果充分体现在实际投资决策中的指导意义。
+
+通过本次研究，我深刻体会到随机过程理论和数值模拟在金融中的重要作用。理
+论与实验的结合，不仅加深了对复杂金融现象的理解，
+也提升了将数学工具应用于实际问题的能力。
+
+最后感谢老师的授课指导，
+感谢本课程助教在平时作业中认真的批改和在习题课精心的讲解，
+使我在学习过程中受益匪浅。
+
+
+\bibliographystyle{unsrt}
+\phantomsection
+
+\addcontentsline{toc}{section}{\refname}
+
+\bibliography{bib}
+
+\listoffigures
+
+\appendix
+
+\section{附录A：代码清单}
+
+所有的程序代码请参考 python 目录下的相应文件，这里不再赘述；
+
+
+\end{document}
+
+
+

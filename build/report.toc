@@ -1,0 +1,16 @@
+\xpg@aux {variant=american}{english}
+\contentsline {section}{\numberline {1}基本布朗运动}{1}{section.1}%
+\contentsline {subsection}{\numberline {1.1}基础概念}{1}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.2}首达时间}{2}{subsection.1.2}%
+\contentsline {subsection}{\numberline {1.3}一阶变差与二阶变差}{3}{subsection.1.3}%
+\contentsline {section}{\numberline {2}几何布朗运动和伊藤公式}{5}{section.2}%
+\contentsline {subsection}{\numberline {2.1}几何布朗运动}{5}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}伊藤公式}{5}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}几何布朗运动的数值模拟}{6}{subsection.2.3}%
+\contentsline {section}{\numberline {3}股票投资策略与自融资策略分析}{8}{section.3}%
+\contentsline {subsection}{\numberline {3.1}数学建模}{8}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}固定持仓策略下的财富过程模拟}{9}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}自融资策略下的投资策略选取}{11}{subsection.3.3}%
+\contentsline {section}{\numberline {4}总结与感想}{13}{section.4}%
+\contentsline {section}{References}{13}{section*.2}%
+\contentsline {section}{\numberline {A}附录A：代码清单}{14}{appendix.A}%
